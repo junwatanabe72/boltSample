@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Get DOM elements with null checks
     const titleInput = document.getElementById('titleInput');
     const descriptionInput = document.getElementById('descriptionInput');
     const priorityInput = document.getElementById('priorityInput');
@@ -8,12 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskList = document.getElementById('taskList');
     const filterBtns = document.querySelectorAll('.filter-btn');
     const sortByDateBtn = document.getElementById('sortByDate');
-
-    // Verify all required elements exist
-    if (!titleInput || !descriptionInput || !priorityInput || !dateInput || !addTaskBtn || !taskList) {
-        console.error('Required DOM elements not found');
-        return;
-    }
 
     // Set default date to tomorrow
     const tomorrow = new Date();
@@ -55,14 +48,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderTasks(filter = 'all', sorted = false) {
         if (!taskList) return;
-
+        
         taskList.innerHTML = '';
         
-        let filteredTasks = tasks.filter(task => {
-            if (filter === 'active') return !task.completed;
-            if (filter === 'completed') return task.completed;
-            return true;
-        });
+        let filteredTasks = tasks;
+        
+        if (filter === 'active') {
+            filteredTasks = tasks.filter(task => !task.completed);
+        } else if (filter === 'completed') {
+            filteredTasks = tasks.filter(task => task.completed);
+        }
 
         if (sorted) {
             filteredTasks.sort((a, b) => {
@@ -76,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const li = document.createElement('li');
             const urgencyClass = getTaskUrgencyClass(task.dueDate);
             const priorityClass = getPriorityClass(task.priority);
+            
             li.className = `task-item ${task.completed ? 'completed' : ''} ${urgencyClass} ${priorityClass}`;
             
             li.innerHTML = `
@@ -96,78 +92,59 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
             const checkbox = li.querySelector('.task-checkbox');
-            if (checkbox) {
-                checkbox.addEventListener('change', () => toggleTask(index));
-            }
+            checkbox.addEventListener('change', () => {
+                tasks[index].completed = checkbox.checked;
+                saveTasks();
+                renderTasks(filter, sorted);
+            });
 
             const deleteBtn = li.querySelector('.delete-btn');
-            if (deleteBtn) {
-                deleteBtn.addEventListener('click', () => deleteTask(index));
-            }
+            deleteBtn.addEventListener('click', () => {
+                tasks.splice(index, 1);
+                saveTasks();
+                renderTasks(filter, sorted);
+            });
 
             taskList.appendChild(li);
         });
     }
 
-    function addTask(title, description, priority, dueDate) {
-        if (!title || title.trim() === '') return;
-        tasks.push({ 
+    addTaskBtn.addEventListener('click', () => {
+        const title = titleInput.value.trim();
+        const description = descriptionInput.value.trim();
+        const priority = priorityInput.value;
+        const dueDate = dateInput.value;
+
+        if (!title) return;
+
+        tasks.push({
             title,
             description,
             priority,
-            completed: false,
-            dueDate: dueDate
+            dueDate,
+            completed: false
         });
+
         saveTasks();
         renderTasks();
-        
-        // Reset form fields
-        if (titleInput) titleInput.value = '';
-        if (descriptionInput) descriptionInput.value = '';
-        if (priorityInput) priorityInput.value = 'low';
-    }
 
-    function toggleTask(index) {
-        tasks[index].completed = !tasks[index].completed;
-        saveTasks();
-        renderTasks();
-    }
-
-    function deleteTask(index) {
-        tasks.splice(index, 1);
-        saveTasks();
-        renderTasks();
-    }
-
-    // Add event listeners with null checks
-    if (addTaskBtn) {
-        addTaskBtn.addEventListener('click', () => {
-            if (titleInput && descriptionInput && priorityInput && dateInput) {
-                addTask(
-                    titleInput.value,
-                    descriptionInput.value,
-                    priorityInput.value,
-                    dateInput.value
-                );
-            }
-        });
-    }
-
-    filterBtns.forEach(btn => {
-        if (btn) {
-            btn.addEventListener('click', () => {
-                filterBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                renderTasks(btn.dataset.filter);
-            });
-        }
+        titleInput.value = '';
+        descriptionInput.value = '';
+        priorityInput.value = 'low';
+        dateInput.valueAsDate = tomorrow;
     });
 
-    if (sortByDateBtn) {
-        sortByDateBtn.addEventListener('click', () => {
-            renderTasks('all', true);
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderTasks(btn.dataset.filter);
         });
-    }
+    });
+
+    sortByDateBtn.addEventListener('click', () => {
+        renderTasks('all', true);
+    });
 
     renderTasks();
 });
