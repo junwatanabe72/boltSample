@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Get DOM elements with null checks
     const titleInput = document.getElementById('titleInput');
     const descriptionInput = document.getElementById('descriptionInput');
     const priorityInput = document.getElementById('priorityInput');
@@ -7,6 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskList = document.getElementById('taskList');
     const filterBtns = document.querySelectorAll('.filter-btn');
     const sortByDateBtn = document.getElementById('sortByDate');
+
+    // Verify all required elements exist
+    if (!titleInput || !descriptionInput || !priorityInput || !dateInput || !addTaskBtn || !taskList) {
+        console.error('Required DOM elements not found');
+        return;
+    }
 
     // Set default date to tomorrow
     const tomorrow = new Date();
@@ -47,6 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderTasks(filter = 'all', sorted = false) {
+        if (!taskList) return;
+
         taskList.innerHTML = '';
         
         let filteredTasks = tasks.filter(task => {
@@ -87,17 +96,21 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
             const checkbox = li.querySelector('.task-checkbox');
-            checkbox.addEventListener('change', () => toggleTask(index));
+            if (checkbox) {
+                checkbox.addEventListener('change', () => toggleTask(index));
+            }
 
             const deleteBtn = li.querySelector('.delete-btn');
-            deleteBtn.addEventListener('click', () => deleteTask(index));
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', () => deleteTask(index));
+            }
 
             taskList.appendChild(li);
         });
     }
 
     function addTask(title, description, priority, dueDate) {
-        if (title.trim() === '') return;
+        if (!title || title.trim() === '') return;
         tasks.push({ 
             title,
             description,
@@ -107,9 +120,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         saveTasks();
         renderTasks();
-        titleInput.value = '';
-        descriptionInput.value = '';
-        priorityInput.value = 'low';
+        
+        // Reset form fields
+        if (titleInput) titleInput.value = '';
+        if (descriptionInput) descriptionInput.value = '';
+        if (priorityInput) priorityInput.value = 'low';
     }
 
     function toggleTask(index) {
@@ -124,26 +139,35 @@ document.addEventListener('DOMContentLoaded', () => {
         renderTasks();
     }
 
-    addTaskBtn.addEventListener('click', () => {
-        addTask(
-            titleInput.value,
-            descriptionInput.value,
-            priorityInput.value,
-            dateInput.value
-        );
-    });
+    // Add event listeners with null checks
+    if (addTaskBtn) {
+        addTaskBtn.addEventListener('click', () => {
+            if (titleInput && descriptionInput && priorityInput && dateInput) {
+                addTask(
+                    titleInput.value,
+                    descriptionInput.value,
+                    priorityInput.value,
+                    dateInput.value
+                );
+            }
+        });
+    }
 
     filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            filterBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderTasks(btn.dataset.filter);
-        });
+        if (btn) {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderTasks(btn.dataset.filter);
+            });
+        }
     });
 
-    sortByDateBtn.addEventListener('click', () => {
-        renderTasks('all', true);
-    });
+    if (sortByDateBtn) {
+        sortByDateBtn.addEventListener('click', () => {
+            renderTasks('all', true);
+        });
+    }
 
     renderTasks();
 });
