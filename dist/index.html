@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>タスク管理アプリ</title>
+  <script type="module" crossorigin src="/assets/index-CGybW4tl.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-CDCJlsks.css">
+</head>
+<body>
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <h2>パスワードを入力してください</h2>
+            <input type="password" id="passwordInput" placeholder="パスワードを入力">
+            <button id="submitPassword">送信</button>
+        </div>
+    </div>
+    <div class="container" style="display: none;">
+        <h1>タスク管理</h1>
+        <div class="task-form">
+            <div class="input-group">
+                <label for="titleInput">タイトル:</label>
+                <input type="text" id="titleInput" placeholder="タスクのタイトル">
+            </div>
+            <div class="input-group">
+                <label for="descriptionInput">内容:</label>
+                <textarea id="descriptionInput" placeholder="タスクの詳細"></textarea>
+            </div>
+            <div class="input-group">
+                <label for="priorityInput">重要度:</label>
+                <select id="priorityInput">
+                    <option value="low">低</option>
+                    <option value="medium">中</option>
+                    <option value="high">高</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="dateInput">期限:</label>
+                <input type="date" id="dateInput">
+            </div>
+            <button id="addTask">追加</button>
+        </div>
+        <div class="task-filters">
+            <button class="filter-btn active" data-filter="all">すべて</button>
+            <button class="filter-btn" data-filter="active">未完了</button>
+            <button class="filter-btn" data-filter="completed">完了済み</button>
+            <button class="sort-btn" id="sortByDate">期限順</button>
+        </div>
+        <ul id="taskList"></ul>
+    </div>
+</body>
+</html>
