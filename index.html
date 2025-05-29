@@ -11,12 +11,14 @@
         <h1>タスク管理</h1>
         <div class="task-input">
             <input type="text" id="taskInput" placeholder="新しいタスクを入力">
+            <input type="date" id="dateInput">
             <button id="addTask">追加</button>
         </div>
         <div class="task-filters">
             <button class="filter-btn active" data-filter="all">すべて</button>
             <button class="filter-btn" data-filter="active">未完了</button>
             <button class="filter-btn" data-filter="completed">完了済み</button>
+            <button class="sort-btn" id="sortByDate">期限順</button>
         </div>
         <ul id="taskList"></ul>
     </div>

@@ -30,12 +30,15 @@ h1 {
     margin-bottom: 20px;
 }
 
-input[type="text"] {
-    flex: 1;
+input[type="text"], input[type="date"] {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 16px;
+}
+
+input[type="text"] {
+    flex: 1;
 }
 
 button {
@@ -57,9 +60,10 @@ button:hover {
     gap: 10px;
     margin-bottom: 20px;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
-.filter-btn {
+.filter-btn, .sort-btn {
     background-color: #f0f0f0;
     color: #333;
 }
@@ -103,6 +107,12 @@ button:hover {
     flex: 1;
 }
 
+.due-date {
+    margin: 0 15px;
+    color: #666;
+    font-size: 0.9em;
+}
+
 .delete-btn {
     background-color: #f44336;
     padding: 5px 10px;
@@ -111,4 +121,16 @@ button:hover {
 
 .delete-btn:hover {
     background-color: #da190b;
+}
+
+.task-item.overdue {
+    border-left: 4px solid #f44336;
+}
+
+.task-item.due-today {
+    border-left: 4px solid #ff9800;
+}
+
+.task-item.due-soon {
+    border-left: 4px solid #ffd700;
 }
