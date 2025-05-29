@@ -9,9 +9,27 @@
 <body>
     <div class="container">
         <h1>タスク管理</h1>
-        <div class="task-input">
-            <input type="text" id="taskInput" placeholder="新しいタスクを入力">
-            <input type="date" id="dateInput">
+        <div class="task-form">
+            <div class="input-group">
+                <label for="titleInput">タイトル:</label>
+                <input type="text" id="titleInput" placeholder="タスクのタイトル">
+            </div>
+            <div class="input-group">
+                <label for="descriptionInput">内容:</label>
+                <textarea id="descriptionInput" placeholder="タスクの詳細"></textarea>
+            </div>
+            <div class="input-group">
+                <label for="priorityInput">重要度:</label>
+                <select id="priorityInput">
+                    <option value="low">低</option>
+                    <option value="medium">中</option>
+                    <option value="high">高</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="dateInput">期限:</label>
+                <input type="date" id="dateInput">
+            </div>
             <button id="addTask">追加</button>
         </div>
         <div class="task-filters">

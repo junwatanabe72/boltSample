@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const taskInput = document.getElementById('taskInput');
+    const titleInput = document.getElementById('titleInput');
+    const descriptionInput = document.getElementById('descriptionInput');
+    const priorityInput = document.getElementById('priorityInput');
     const dateInput = document.getElementById('dateInput');
     const addTaskBtn = document.getElementById('addTask');
     const taskList = document.getElementById('taskList');
@@ -28,6 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (diffDays === 0) return 'due-today';
         if (diffDays <= 3) return 'due-soon';
         return '';
+    }
+
+    function getPriorityClass(priority) {
+        return `priority-${priority}`;
     }
 
     function formatDate(dateString) {
@@ -60,12 +66,23 @@ document.addEventListener('DOMContentLoaded', () => {
         filteredTasks.forEach((task, index) => {
             const li = document.createElement('li');
             const urgencyClass = getTaskUrgencyClass(task.dueDate);
-            li.className = `task-item ${task.completed ? 'completed' : ''} ${urgencyClass}`;
+            const priorityClass = getPriorityClass(task.priority);
+            li.className = `task-item ${task.completed ? 'completed' : ''} ${urgencyClass} ${priorityClass}`;
             
             li.innerHTML = `
-                <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''}>
-                <span class="task-text">${task.text}</span>
-                <span class="due-date">${formatDate(task.dueDate)}</span>
+                <div class="task-header">
+                    <label class="checkbox-label">
+                        <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''}>
+                        <span class="checkmark"></span>
+                        完了
+                    </label>
+                    <span class="task-title">${task.title}</span>
+                    <span class="priority-badge">${task.priority === 'high' ? '高' : task.priority === 'medium' ? '中' : '低'}</span>
+                </div>
+                <div class="task-body">
+                    <p class="task-description">${task.description}</p>
+                    <span class="due-date">${formatDate(task.dueDate)}</span>
+                </div>
                 <button class="delete-btn">削除</button>
             `;
 
@@ -79,16 +96,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function addTask(text, dueDate) {
-        if (text.trim() === '') return;
+    function addTask(title, description, priority, dueDate) {
+        if (title.trim() === '') return;
         tasks.push({ 
-            text, 
+            title,
+            description,
+            priority,
             completed: false,
             dueDate: dueDate
         });
         saveTasks();
         renderTasks();
-        taskInput.value = '';
+        titleInput.value = '';
+        descriptionInput.value = '';
+        priorityInput.value = 'low';
     }
 
     function toggleTask(index) {
@@ -104,13 +125,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     addTaskBtn.addEventListener('click', () => {
-        addTask(taskInput.value, dateInput.value);
-    });
-    
-    taskInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            addTask(taskInput.value, dateInput.value);
-        }
+        addTask(
+            titleInput.value,
+            descriptionInput.value,
+            priorityInput.value,
+            dateInput.value
+        );
     });
 
     filterBtns.forEach(btn => {
