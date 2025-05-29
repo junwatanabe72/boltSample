@@ -1,4 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const CORRECT_PASSWORD = 'arent';
+    const container = document.querySelector('.container');
+    const passwordModal = document.getElementById('passwordModal');
+    const passwordInput = document.getElementById('passwordInput');
+    const submitPasswordBtn = document.getElementById('submitPassword');
+
+    // パスワード認証
+    submitPasswordBtn.addEventListener('click', () => {
+        if (passwordInput.value === CORRECT_PASSWORD) {
+            passwordModal.style.display = 'none';
+            container.style.display = 'block';
+        } else {
+            alert('パスワードが正しくありません');
+            passwordInput.value = '';
+        }
+    });
+
+    // Enterキーでもパスワード送信
+    passwordInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            submitPasswordBtn.click();
+        }
+    });
+
     const titleInput = document.getElementById('titleInput');
     const descriptionInput = document.getElementById('descriptionInput');
     const priorityInput = document.getElementById('priorityInput');
